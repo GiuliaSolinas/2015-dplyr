@@ -6,8 +6,9 @@ Der erste Vortrag der neugegründeten Use R Group in München - Applied R.
 
 Zu dem ersten Talk sind hier folgende Dokumente vorhanden:
 
-* slides.Rmd und slides.htlm
-* tutorial.Rmd und tutorial.htlm
-* solution.Rmd und solution.html
+* slides.Rmd 
+* tutorial.Rmd 
+* solution.Rmd (folgt)
+(zu öffnen z.B. mit RStudio)
 
 Viel Spaß!
