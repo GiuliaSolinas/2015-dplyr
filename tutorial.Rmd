@@ -1,0 +1,89 @@
+---
+title: 'Applied R Munich <br> <!---“A Grammar of Data Manipulation”- --->Eine Einführung in das Paket dplyr <br> __Solutions__'
+author: "Philipp J. Rösch"
+date: "26.10.2015"
+output: html_document
+---
+<br>
+
+Die Fragen stammen größtenteils aus Hadley Wickhams [dplyr-Tutorial](https://www.dropbox.com/sh/i8qnluwmuieicxc/AAAgt9tIKoIm7WZKIyK25lh6a) von der useR! 2014. Danke hierfür!
+
+```{r}
+suppressMessages(library(dplyr))
+library(hflights)
+flights <- tbl_df(hflights)
+```
+
+#### 1. Welcher Flug hat am meisten Verspätung aufgeholt? Verwende `FlightNum`, `DepDelay` und `ArrDelay`.
+
+
+```{r}
+
+```
+
+
+#### 2. Berechne die Geschwindigkeit in mph mit `AirTime` (in Minuten) und `Distance` (in miles). Erstelle außerdem die Variable Geschwindigkeit in km/h. Welche Flugzeuge (`FlightNum`) sind am schnellsten?
+
+```{r}
+
+```
+
+Zusatzfrage: Erstelle eine Häufigkeitstabelle der Airlines für die 20 schnellsten Flüge.
+
+```{r}
+
+```
+
+
+#### 3. Welche Airline ist im Durchschnitt am schnellsten?
+
+```{r}
+
+```
+
+#### 4. Schreibe den unten stehenden Code in die Chaining-Syntax um.
+
+```{r eval=FALSE}
+flights4 <- flights %>%
+  mutate(hour = DepTime %/% 100, date = sprintf("%04s-%02s-%02s", Year, Month, DayofMonth)) 
+
+hourly_delay <- filter(
+  summarise(
+    group_by(
+      filter(
+        flights4, !is.na(DepDelay)
+      ),
+      date, hour
+    ),
+    avg_delay = mean(DepDelay),
+    n = n()
+  ), 
+  n > 10
+)
+```
+
+```{r}
+
+```
+
+#### 5. Um wie viel Uhr starten jeweils täglich die ersten Flieger vom George Bush Intercontinental Airport (IAH)? `DepTime` ist hier ein Integer. 
+
+```{r}
+
+```
+
+
+#### 6. Gebe für jedes Flugzeug die zwei Flüge mit der meisten Verspätung aus. Was ist hier der Unterschied zwischen `min_rank`, `row_number` und `dense_rank`?
+
+```{r}
+
+```
+
+Zusatzaufgabe: Welche Flüge gab es bloß einmal in 2011?
+
+```{r}
+
+```
+
+
+
