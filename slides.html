@@ -660,7 +660,7 @@ flights %>%
 <li>Mehr Informationen in der <a href="http://cran.r-project.org/web/packages/dplyr/vignettes/databases.html">Datenbank Vignette</a></li>
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># connect to an PostgreSQL database containing the hflights data</span>
-my_db &lt;-<span class="st"> </span><span class="kw">src_postgres</span>(<span class="dt">dbname =</span> <span class="st">&quot;testdb&quot;</span>, <span class="dt">host =</span> <span class="st">&quot;localhost&quot;</span>, <span class="dt">user =</span> <span class="st">&quot;philipprosch&quot;</span>)
+my_db &lt;-<span class="st"> </span><span class="kw">src_postgres</span>(<span class="dt">dbname =</span> <span class="st">&quot;testdb&quot;</span>, <span class="dt">host =</span> <span class="st">&quot;localhost&quot;</span>, <span class="dt">user =</span> <span class="st">&quot;my_name&quot;</span>)
 
 <span class="co"># connect to the &quot;hflights&quot; table in that database</span>
 flights_tbl &lt;-<span class="st"> </span><span class="kw">tbl</span>(my_db, <span class="st">&quot;hflights&quot;</span>)
@@ -678,24 +678,6 @@ flights_tbl %&gt;%
 tbl(my_db, sql('SELECT "UniqueCarrier", "DepDelay" FROM hflights ORDER BY "DepDelay" DESC'))
 ```
 
-```
-## Source: postgres 9.4.4 [philipprosch@localhost:5432/testdb]
-## From: <derived table> [?? x 2]
-## 
-##    UniqueCarrier DepDelay
-## 1             CO       NA
-## 2             CO       NA
-## 3             CO       NA
-## 4             B6       NA
-## 5             B6       NA
-## 6             B6       NA
-## 7             AA       NA
-## 8             AA       NA
-## 9             CO       NA
-## 10            CO       NA
-## ..           ...      ...
-```
-
 ## Datenbanken: SQL-Befehle
 
 dplyr kann das SQL-Statement und den Query Execution Plan zurückgeben
@@ -707,19 +689,6 @@ flights_tbl %>%
     select(UniqueCarrier, DepDelay) %>%
     arrange(desc(DepDelay)) %>%
     explain() 
-```
-
-```
-## <SQL>
-## SELECT "UniqueCarrier" AS "UniqueCarrier", "DepDelay" AS "DepDelay"
-## FROM "hflights"
-## ORDER BY "DepDelay" DESC
-## 
-## 
-## <PLAN>
-## Sort  (cost=28872.46..29441.20 rows=227496 width=7)
-##   Sort Key: "DepDelay"
-##   ->  Seq Scan on hflights  (cost=0.00..5518.96 rows=227496 width=7)
 ```
 --->
 </div>

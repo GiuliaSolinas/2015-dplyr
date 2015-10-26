@@ -459,9 +459,9 @@ flights %>%
 * Kann nur SELECT Statements erzeugen
 * Mehr Informationen in der [Datenbank Vignette](http://cran.r-project.org/web/packages/dplyr/vignettes/databases.html)
 
-```{r results='hide', eval=TRUE}
+```{r eval=FALSE}
 # connect to an PostgreSQL database containing the hflights data
-my_db <- src_postgres(dbname = "testdb", host = "localhost", user = "philipprosch")
+my_db <- src_postgres(dbname = "testdb", host = "localhost", user = "my_name")
 
 # connect to the "hflights" table in that database
 flights_tbl <- tbl(my_db, "hflights")
@@ -475,7 +475,7 @@ flights_tbl %>%
 <!---
 ## Datenbanken: SQL-Befehle
 
-```{r eval=TRUE}
+```{r eval=FALSE}
 # send SQL commands to the database
 tbl(my_db, sql('SELECT "UniqueCarrier", "DepDelay" FROM hflights ORDER BY "DepDelay" DESC'))
 ```
@@ -484,7 +484,7 @@ tbl(my_db, sql('SELECT "UniqueCarrier", "DepDelay" FROM hflights ORDER BY "DepDe
 
 dplyr kann das SQL-Statement und den Query Execution Plan zurückgeben
 
-```{r eval=TRUE}
+```{r eval=FALSE}
 # ask dplyr for the SQL commands
 flights_tbl %>%
     select(UniqueCarrier, DepDelay) %>%
