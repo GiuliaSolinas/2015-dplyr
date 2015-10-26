@@ -10,6 +10,10 @@ output:
     footer: "Applied R Munich, 26. Oktober 2015: dplyr"
 ---
 
+##
+
+Folien und Tutorial sind online auf [https://github.com/lmu-applied-r/2015-dplyr](https://github.com/lmu-applied-r/2015-dplyr).
+
 ## Dank!
 
 Die Folien dieser Präsentation basieren auf Kevin Markhams Code von [www.dataschool.io](http://dataschool.io)
