@@ -1,0 +1,168 @@
+---
+title: 'Applied R Munich: "A Grammar of Data Manipulation" -- Eine Einführung in das
+  Paket dplyr <br> __Solution__'
+author: "Philipp J. Rösch"
+date: "26.10.2015"
+output: html_document
+---
+<br>
+
+Die Fragen stammen größtenteils aus Hadley Wickhams [dplyr-Tutorial](https://www.dropbox.com/sh/i8qnluwmuieicxc/AAAgt9tIKoIm7WZKIyK25lh6a) von der useR! 2014. Danke hierfür!
+
+```{r}
+suppressMessages(library(dplyr))
+library(hflights)
+flights <- tbl_df(hflights)
+```
+
+#### 1. Welcher Flug hat am meisten Verspätung aufgeholt? Verwende `FlightNum`, `DepDelay` und `ArrDelay`.
+
+
+```{r}
+flights %>%
+  select(FlightNum, DepDelay, ArrDelay) %>%
+  mutate(caught_up = desc(DepDelay - ArrDelay)) %>%
+  arrange(caught_up)
+```
+
+
+#### 2. Berechne die Geschwindigkeit in mph mit `AirTime` (in Minuten) und `Distance` (in miles). Erstelle außerdem die Variable Geschwindigkeit in km/h. Welche Flugzeuge (`FlightNum`) sind am schnellsten?
+
+```{r}
+flights2 <- flights %>%
+  select(UniqueCarrier, FlightNum, AirTime, Distance) %>%
+  mutate(mph = Distance / AirTime * 60) %>%
+  mutate(kmh = mph * 1.60934) %>%
+  arrange(desc(kmh)) %>%
+  print
+```
+
+Zusatzfrage: Erstelle eine Häufigkeitstabelle der Airlines für die 20 schnellsten Flüge.
+
+```{r}
+flights2 %>%
+  filter(min_rank(desc(kmh)) <=20) %>%
+  select(UniqueCarrier) %>%
+  table()
+```
+oder:
+```{r}
+flights2 %>%
+  top_n(20) %>%
+  select(UniqueCarrier) %>%
+  table()
+```
+
+
+#### 3. Welche Airline ist im Durchschnitt am schnellsten?
+
+```{r}
+flights2 %>%
+  group_by(UniqueCarrier) %>%
+  summarise(carrier_avg_speed = mean(kmh, na.rm = TRUE)) %>%
+  arrange(desc(carrier_avg_speed))
+```
+oder:
+```{r}
+flights2 %>%
+  filter(!is.na(kmh)) %>%
+  group_by(UniqueCarrier) %>%
+  summarise(carrier_avg_speed = mean(kmh)) %>%
+  arrange(desc(carrier_avg_speed))
+```
+
+#### 4. Schreibe den unten stehenden Code in die Chaining-Syntax um.
+
+```{r eval=FALSE}
+flights4 <- flights %>%
+  mutate(hour = DepTime %/% 100, date = sprintf("%04s-%02s-%02s", Year, Month, DayofMonth)) 
+
+hourly_delay <- filter(
+  summarise(
+    group_by(
+      filter(
+        flights4, !is.na(DepDelay)
+      ),
+      date, hour
+    ),
+    avg_delay = mean(DepDelay),
+    n = n()
+  ), 
+  n > 10
+)
+```
+
+```{r}
+flights %>% 
+  mutate(hour = DepTime %/% 100, date = sprintf("%04s-%02s-%02s", Year, Month, DayofMonth)) %>%
+  filter(!is.na(DepDelay)) %>%
+  group_by(date, hour) %>%
+  summarise(delay = mean(DepDelay), n = n()) %>%
+  filter(n > 10)
+```
+
+#### 5. Um wie viel Uhr starten jeweils täglich die ersten Flieger vom George Bush Intercontinental Airport (IAH)? `DepTime` ist hier ein Integer. 
+
+```{r}
+flights %>%
+  filter(Origin == "IAH") %>%
+  select(Month, DayofMonth, UniqueCarrier, DepTime) %>%
+  group_by(Month, DayofMonth) %>%
+  summarise(first_flight = min(DepTime, na.rm = TRUE))
+```
+
+
+#### 6. Gebe für jedes Flugzeug die zwei Flüge mit der meisten Verspätung aus. Was ist hier der Unterschied zwischen `min_rank`, `row_number` und `dense_rank`?
+
+```{r}
+x <- c(1, 1, 2, 3, 5)
+min_rank(x)
+row_number(x)
+dense_rank(x)
+```
+
+```{r}
+# with min_rank
+flights %>%
+  select(ArrDelay, FlightNum) %>%
+  filter(!is.na(ArrDelay)) %>%
+  group_by(FlightNum) %>%
+  filter(min_rank(desc(ArrDelay)) <=2) %>% 
+  arrange(FlightNum) %>%
+  print() %>%
+  summarise(n = n()) %>%
+  group_by(n) %>%
+  summarise(N = n())
+
+# use top_n
+flights %>%
+  select(FlightNum, ArrDelay) %>%
+  filter(!is.na(ArrDelay)) %>%
+  group_by(FlightNum) %>%
+  top_n(2) %>% 
+  arrange(FlightNum)
+
+# with row_number
+flights %>%
+  select(ArrDelay, FlightNum) %>%
+  filter(!is.na(ArrDelay)) %>%
+  group_by(FlightNum) %>%
+  filter(row_number(desc(ArrDelay)) <=2) %>% 
+  arrange(FlightNum) %>%
+  print() %>%
+  summarise(n = n()) %>%
+  group_by(n) %>%
+  summarise(N = n())
+```
+
+Zusatzaufgabe: Welche Flüge gab es bloß einmal in 2011?
+
+```{r}
+flights %>% 
+  group_by(FlightNum) %>%
+  summarise(n = n()) %>%
+  filter(n == 1)
+```
+
+
+
