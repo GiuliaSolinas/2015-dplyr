@@ -1,6 +1,6 @@
 ---
 title: ' <font color="1C63AF"> Applied R Munich: <br> “A Grammar of Data Manipulation” --– <br>  Eine Einführung in das Paket dplyr </font> '
-author: "Philipp J. Rösch <br> ENTWURF"
+author: "Philipp J. Rösch"
 date: "26.10.2015"
 output: 
   slidy_presentation:
@@ -14,7 +14,6 @@ output:
 
 Die Folien dieser Präsentation basieren auf Kevin Markhams Code von [www.dataschool.io](http://dataschool.io)
 
-
 ## Data Cleaning
 
 "A New York Times article [...] discovers the 80-20 rule: that 80% of a typical data science project is sourcing cleaning and preparing the data, while the remaining 20% is actual data analysis." - [Revolution Analytics Blog](http://blog.revolutionanalytics.com/2014/08/data-cleaning-is-a-critical-part-of-the-data-science-process.html)
@@ -26,6 +25,11 @@ Die Folien dieser Präsentation basieren auf Kevin Markhams Code von [www.datasc
 * Großartig zur Datenexploration und -manipulation
 * Intuitiv zu schreiben und einfach zu lesen (vor allem wegen der “Chaining”-Syntax)
 * Schneller als base R Befehle
+
+Von wem?
+
+* Hadely Wickham (ggplot2, plyr, reshape2, lubridate, stringr, httr, roxygen2, testthat, devtools, lineprof, staticdocs)
+* Romain Francois 
 
 ## [Cheat Sheet](https://www.rstudio.com/resources/cheatsheets/)
 
@@ -44,6 +48,7 @@ Erstelle Variablen | __`mutate`__, `mutate_each`, __`transmute`__ (+ Window Func
 Fasse Daten zusammen | __`summarise`__, `summarise_each` (+ Summary Functions)
 Gruppiere Daten | __`group_by`__
 
+Es werden beinahe alle dplyr-Funktionen in den Folien erwähnt.
 
 ## dplyr laden und Beispielsdaten 
 
@@ -62,12 +67,7 @@ library(hflights)
 * magrittr wird automatisch mit dplyr geladen
 * Chaining erhöht Lesbarkeit, vor allem bei der Verwendung von vielen Befehlen
 * Befehle können hintereinander geschrieben werden und werden durch den Operator `%>%` ("then") verknüpft
-<!---
-base R | magrittr 
---- | --- 
-`f(x, y)` | `x %>% f(y)` 
-`f(x, y, z)` | `y %>% f(x, ., z)`  
---->
+
 
 ```{r eval=FALSE}
 # f(x, y) is the same as
@@ -155,26 +155,6 @@ mtcars_new <- mtcars %>%
     * Erstes Argument: Data Frame-Name
     * Ausgabewert: Data Frame
     * Ohne Zuweisung wird Data Frame nicht verändert
-    
-
-
-## Auswählen von Zeilen
-
-```{r, eval=FALSE}
-# filter rows
-filter(flights, ArrDelay >= 60)
-
-# remove duplicates
-distinct(flights)
-
-# select rows by position
-slice(flights, 11:20)
-
-
-# sample_n(flights, 10, replace = FALSE) (zieht random n Observationen ohne Zurücklegen)
-# sample_frac(flights, 0.25, replace = FALSE) (zieht 25% der Observationen ohne/mit Zurücklegen)
-# top_n(flights, 10) (wählt Top 10-Werte, gegeben Gruppierung und Sortierung)
-```
 
 --->
 
@@ -182,12 +162,12 @@ slice(flights, 11:20)
 
 Verb | Aufgabe
 --- | ---
-`filter(flights, Month < 3)` | filtert aus Zeilen
+__`filter(flights, Month < 3)`__ | filtert aus Zeilen
 `distinct(flights)` | entfernt Duplikate 
 `slice(flights, 11:20)` | wählt 11. bis 20. Observation
 `sample_n(flights, 10)` | zieht random n Observationen ohne Zurücklegen 
 `sample_frac(flights, .2)` | zieht 20% der Observationen ohne Zurücklegen
-`top_n(flights, 10)` | wählt Top 10-Werte, gegeben Gruppierung und Sortierung 
+__`top_n(flights, 10)`__ | wählt Top 10-Werte, gegeben Gruppierung und Sortierung 
 
 ## Auswählen von Zeilen: `filter` mit AND
 
@@ -251,29 +231,6 @@ flights %>% select(DepTime, ArrTime, FlightNum) %>% print(n = 5)
 * `one_of(vector)`   
 * `everything()`
 
-<!---
-## Auswählen von Variablen: `select` und alle Helper Functions 
-
-|  | |  | 
-|  --- | --- | --- | 
-|  `Year:DayofMonth` | |  `num_range("x", 1:5, width = 2)` | 
-|  `contains("Taxi")` | |  `-TaxiIn` | 
-|  `starts_with("Taxi")` | | `one_of(vector)` | 
-|  `ends_with("Delay")` | | `everything()` |    
-|   `matches(".Dela.")` | | |  
-
-
-## Auswählen von Variablen: `select` und alle Helper Functions 
-
-|  | |  |  
-|  --- | --- | --- |  
-|  `name01:name05` | |  `num_range("name", 1:5, width = 2)` |  
-|  `contains("name")` | |  `-TaxiIn` |  
-|  `starts_with("name")` | | `one_of(c("name01", name02))` |  
-|  `ends_with("01")` | | `everything()` |    
-|   `matches(".me0.")` | | |  
---->
-
 ## Auswählen von Variablen: `select` mit Helper Function
 
 ```{r}
@@ -306,7 +263,6 @@ flights %>%
 
 ```
 
-
 ## Erstellen neuer Variablen: `mutate` 
 
 ```{r results='hide'}
@@ -334,19 +290,6 @@ Nur die neue Variable wird ausgegeben (Achtung bei Zuweisungen)
 flights %>% transmute(Distance_km = Distance * 1.60934)
 ```
 
-<!---
-## Daten zusammenfassen: `summarise`
-
-* Vor allem nützlich bei Daten, die zuvor gruppiert wurden
-* `group_by` erstellt die Gruppen auf denen die `summarise`-Operation ausgeführt wird 
-* Summary Functions:
-    * `first()`, `last()`, `nth()`,
-    * `n()`, `n_distinct()`,
-    * `min()`, `max()`,
-    * `mean()`, `median()`,
-    * `var()`, `sd()`
---->
-
 ## Daten zusammenfassen: `summarise`
 
 * Summary Function nimmt n Observationen und gibt einen Wert zurück
@@ -362,16 +305,6 @@ Summary Functions:
 * `min()`, `max()`
 * __`mean()`__, `median()` 
 * `var()`, `sd()`
-
-<!---
-| | | | 
-| --- | --- | --- | 
-| `first()` | `last()` | `nth()` |  
-| `n()` | `n_distinct()` | | 
-| `min()` | `max()` | | 
-| `mean()` | `median()` | | 
-| `var()` | `sd()` | | 
-  --->  
     
     
 ## Daten zusammenfassen: `summarise`
@@ -403,10 +336,10 @@ flights %>%
     print(n = 3)
 ```
 
-<!---
+
 ## Daten zusammenfassen: Summary Function `n()` 
 
-Argument vereinfachbar mit `tally`
+Vereinfachbar mit `tally(sort = TRUE)` anstelle von `summarise(flight_count = n()) %>% arrange(desc(flight_count))`.
 
 ```{r}
 # for each day of the year, count the total number of flights and sort in descending order
@@ -416,7 +349,7 @@ flights %>%
     print(n = 3)
 ```
 
---->
+
 
 ## Daten zusammenfassen: Summary Function `n_distinct(vector)`
 
@@ -472,11 +405,6 @@ flights %>%
 * Speziell für `filter` und `mutate`
 
 <br> 
-<!---
-    * Ranking und Ordering Functions (like `min_rank`, `dense_rank`, `percent_rank`),
-    * Offset Functions (`lead` and `lag`),
-    * Kumulative Aggregate (like `cummean`).
---->
 
 | | |
 | --- | --- | 
@@ -497,10 +425,10 @@ flights %>%
     select(Month, DayofMonth, DepDelay) %>%
     filter(min_rank(desc(DepDelay)) <= 2) %>%
     arrange(UniqueCarrier, desc(DepDelay)) %>%
-    print(n = 2)
+    print(n = 4)
 ```
 
-* Vereinfachbar mit `top_n(2)` anstelle von `filter(min_rank(desc(DepDelay)) <= 2)`
+Vereinfachbar mit `top_n(2)` anstelle von `filter(min_rank(desc(DepDelay)) <= 2)`
 
 
 ## Window Functions: `lag` 
@@ -584,7 +512,7 @@ m$mod[1]
 * Datensatzoperationen: `union`, `intersect`, `setdiff`, `setequal` 
 * Datensätze verbinden: `bind`, `bind_cols`, `bind_rows`
 * `ungroup`
-* Standard evaluation: `filter_`, `select_`, ... 
+* Innerhalb eigener Funktionen (Standard Evaluation): `filter_`, `select_`, ... 
 * `data_frame`
 
 ## Quellen

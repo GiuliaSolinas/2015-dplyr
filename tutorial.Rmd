@@ -1,5 +1,6 @@
 ---
-title: 'Applied R Munich <br> <!---“A Grammar of Data Manipulation”- --->Eine Einführung in das Paket dplyr <br> __Solutions__'
+title: Applied R Munich <br> <!---“A Grammar of Data Manipulation”- --->Eine Einführung
+  in das Paket dplyr <br> __Solutions__
 author: "Philipp J. Rösch"
 date: "26.10.2015"
 output: html_document
