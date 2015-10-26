@@ -1,5 +1,5 @@
 ---
-title: ' <font color="1C63AF"> Applied R Munich: <br> “A Grammar of Data Manipulation” --– <br>  Eine Einführung in das Paket dplyr </font> '
+title: '<font color="1C63AF"> Applied R Munich: <br> “A Grammar of Data Manipulation” --– <br>  Eine Einführung in das Paket dplyr </font> '
 author: "Philipp J. Rösch"
 date: "26.10.2015"
 output: 
